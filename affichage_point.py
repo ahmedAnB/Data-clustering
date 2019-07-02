@@ -34,6 +34,36 @@ def afficher_XY(X, Y):
     plt.plot(X,Y)
     plt.show()
 
+def afficher_plsr_pts_rect_3(set_rectangles, set_points, i, red_rectangles, droite):
+    """
+    Displays reactangles and/or points in 2 dimension
+    """
+    X, Y, ensembles_rect = None, None, None
+    plt.figure()
+    currentAxis = plt.gca()
+    if droite is not None:
+        X1, Y1 = afficher_points_2D(droite)
+        plt.plot(X1, Y1, color = 'red')
+    if set_points is not None:
+        X,Y = afficher_points_2D(set_points)
+        plt.scatter(X, Y, s=size)
+    if set_rectangles is not None:
+        ensembles_rect = []
+        for rect in set_rectangles:
+            if isinstance(rect[0],list):
+                R = afficher_rectangle(rect)
+#               print(R)
+                if rect in red_rectangles:
+                    currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'crimson'))
+                else:
+                    currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'black'))
+    #plt.show()
+    date = datetime.datetime.now()
+    num =  str(i)
+    plt.savefig("./animation/"+num+'.png')
+    print("sauvegarde n° " + num + " réussi")
+
+
 def afficher_plsr_pts_rect_2(set_rectangles, set_points, i, red_rectangles):
     """
     Displays reactangles and/or points in 2 dimension

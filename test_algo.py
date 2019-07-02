@@ -1,16 +1,19 @@
-from creation_point import creation_point, creation_point_rectangles
+from creation_point import * 
 from main import *
 from affichage_point import * 
 
 def fonction_pricipal():
-    n = 1000
-    nb_rectangle = 10
+    n = 10000
+    nb_rectangle = 10 
     dimension = 2
 
-    set_point = creation_point_rectangles(n, nb_rectangle, dimension)
+    #set_point = creation_point_rectangles_2(n, nb_rectangle, dimension)
+    set_point = creation_point_cercle(n, nb_rectangle, dimension)
     
     #evolution_heta_cout(set_point)
-    set_rectangle = sbs_m_algo_v2(set_point,0.05)
+    set_rectangle = sbs_m_algo(set_point,0.01)
+    #evolution_nb_rectangle_cost(set_point)
+    
     #print(len(set_rectangle))
     #afficher_plsr_pts_rect(set_rectangle, set_point)
 

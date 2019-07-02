@@ -6,21 +6,24 @@ from affichage_point import *
 
 #declaration des constantes
 
-eta = 10**-5
+heta = 10**-5
 dimension =2 
 
 
-def volumetric_cost(R):
+def volumetric_cost(R, S = None):
     """
     computes the volume of a Rectangle R
     """
-    if not(isinstance(R[0],list)):
-        return 0
+    if S is None:
+        if not(isinstance(R[0],list)):
+            return 0
+        else:
+            result = 0
+            for xi_lower, xi_upper in zip(R[0],R[1]):
+                result *= abs(xi_upper - xi_lower)
+            return result
     else:
-        result = 0
-        for xi_lower, xi_upper in zip(R[0],R[1]):
-            result *= abs(xi_upper - xi_lower)
-        return result
+        return abs(volumetric_cost(R) - volumetric_cost(S))
 
 
 def merge_gain_volumme(R, S):
@@ -30,7 +33,7 @@ def merge_gain_volumme(R, S):
     return volumetric_cost(merge(R,S)) - volumetric_cost(R) - volumetric_cost(S)
 
 
-def distance_lp(R,S, p):
+def distance_lp(R,S, p = 2):
     """
     return the Lp distance btw R and S
     """
@@ -42,7 +45,7 @@ def distance_lp(R,S, p):
        S1= S[0]
     result = 0
     
-    for ri, si in zip(R, S):
+    for ri, si in zip(R1, S1):
         result += abs(ri -si)**p
     
     return result ** (1/p)
@@ -235,13 +238,14 @@ def min_ij_arrray(array, set_rectangle, n):
     
     for i in range(n):
         for j in range(i+1, n):
-#            print("i = ",i, " j = ", j," n = ", n)
-#            print("len(array1[i])", len(array1[i]))
+            print("i = ",i, " j = ", j," n = ", n)
             dist = array1[i][j]
+            print("dist " , dist, " min_dist ", min_dist) 
             if dist < min_dist:
                 nearest_neighboor = (set_rectangle[i], set_rectangle[j], i, j)
                 min_dist = dist
-
+                print("new min_dist ", min_dist)
+    print("######################################################")
     return nearest_neighboor[2], nearest_neighboor[3]
 
 def merge_array(R, i, S, j,  array_distance, set_rectangle, distance_used):
@@ -279,12 +283,14 @@ def merge_array(R, i, S, j,  array_distance, set_rectangle, distance_used):
     
     cR = array1[i]
     cS = array1[j]
-    copie_array = [array1[k] for k in range(len(array1)) if (k != i and k != j)]
+    #copie_array = [array1[k] for k in range(len(array1)) if (k != i and k != j)]
     copie_array = [[array1[k][l] for l in range(len(array1[k])) if l != i and l !=j] for k in range(len(array1)) if (k != i and k != j)] 
+    print(len(copie_array))
+    
     dist_RUS = []
     
     for indice, column in enumerate(copie_array):
-        print("indice ", indice," len(copie_2_set) ", len(copie_2_set)," len(copie_array) ",len(copie_array))
+       # print("indice ", indice," len(copie_2_set) ", len(copie_2_set)," len(copie_array) ",len(copie_array))
         dist = distance_used(copie_2_set[indice], RUS)
         column.append(dist)
         dist_RUS.append(dist)
@@ -367,7 +373,7 @@ def sbs_m_algo_v2(set_point, eta):
     """
     executes step by step the master_algo using array_distance
     """
-    distance_used = distance
+    distance_used = volumetric_cost
 
 
     #find the perfect hash table
@@ -389,8 +395,8 @@ def sbs_m_algo_v2(set_point, eta):
         R,nn1, S, nn2 = less_naive_methode(set_rectangle, array_distance)
         nearest_neighboor = (R, S)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
-        afficher_plsr_pts_rect_2(set_rectangle, set_point, i, nearest_neighboor)
+        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
+        afficher_plsr_pts_rect_3(set_rectangle, set_point, i, nearest_neighboor, [R[0],S[0]])
         if len(set_rectangle) > 2:
             #merge the NN
             array_distance, set_rectangle = merge_array(R, nn1, S, nn2, array_distance, set_rectangle, distance_used)
@@ -418,10 +424,10 @@ def sbs_m_algo(set_point, eta):
         i+=1
         afficher_plsr_pts_rect_1(set_rectangle, set_point, i)
         i+=1
-        nearest_neighboor = naive_nearest_neighboor(set_rectangle)
+        nearest_neighboor = naive_nearest_neighboor(set_rectangle, distance)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
-        afficher_plsr_pts_rect_2(set_rectangle, set_point, i, nearest_neighboor)
+        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
+        afficher_plsr_pts_rect_3(set_rectangle, set_point, i, nearest_neighboor, [nearest_neighboor[0][0], nearest_neighboor[1][0]])
         if len(set_rectangle) > 2:
             #merge the NN
             set_rectangle = merge_rectangle(nearest_neighboor, set_rectangle)
@@ -450,7 +456,7 @@ def master_algorithme(set_point, heta):
         afficher_plsr_pts_rect_1(set_rectangle, None, i)
         nearest_neighboor = naive_nearest_neighboor(set_rectangle)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
+        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
         i+=1
         if len(set_rectangle) > 2:
             #merge the NN
@@ -480,7 +486,7 @@ def evolution_cost(set_point, eta):
         #afficher_plsr_pts_rect_1(set_rectangle, None, i)
         nearest_neighboor = naive_nearest_neighboor(set_rectangle)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
+        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
         i+=1
         couts.append(cost_rectangle(set_rectangle))
         valeur_nb_rectangle.append(len(set_rectangle))
@@ -499,9 +505,9 @@ def algo_avec_variation_heta(set_point):
     and computes the evolution of the cost depending on heta
     """
     #initialisation
-    eta = 1
+    heta = 1
     couts = []
-    etas = []
+    hetas = []
     sets = []
 
     while heta > 0.1:
@@ -512,14 +518,14 @@ def algo_avec_variation_heta(set_point):
         cout_rectangle = cost_rectangle(set_rectangle)
         
         #save values of heta and cost, and the set of rectangle
-        etas.append(eta)
+        hetas.append(heta)
         couts.append(cout_rectangle)
         sets.append(set_rectangle)
         
         #decrease the value of heta
-        eta -=10**-1
+        heta -=10**-1
     
-    return etas, couts, sets
+    return hetas, couts, sets
 
 
 
