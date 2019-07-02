@@ -21,7 +21,21 @@ def incercle(pt, center, rayon):
     dist = 0
     for x1, x2 in zip(pt, center):
         dist += (x1 - x2)**2
+    
     return dist <= (rayon**2)
+
+def inrectangle(pt, R):
+    '''
+    return True if a point is a rectangle
+    '''
+#    print(R)
+    lower, upper = R[0], R[1]
+#    print(len(lower), len(pt))
+    for i, x in enumerate(pt):
+        if not(x>lower[i] and x<upper[i]):
+            return False
+    
+    return True
 
 def creation_point_cercle(nb_point, nb_cercle, dimension):
     """
@@ -42,21 +56,45 @@ def creation_point_cercle(nb_point, nb_cercle, dimension):
                 i+=1
     return pts
             
-
-def creation_point_rectangles_2(nb_point, nb_rectangle, dimension):
+def tirage_points_set(set_rectangle, nb_point):
     """
-    creates nb_points in n rectangles in D dimension
+    creates n points in set_rectangle
     """
+    n = nb_point//len(set_rectangle)
     pts = []
+#    print(set_rectangle)
+    for rect in set_rectangle:
+#        print(rect)
+        R, S = rect[0], rect[1]
+        for i in range(n):
+            pt = [uniform(R[i], S[i]) for i in range(len(R))]
+            pts.append(pt)
+    return pts
+
+def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, boole = False):
+    """
+    creates nb_points in n rectangles with random size in D dimension    
+    """
+    pts, cotes = [], []
+
     sommets = creation_point(nb_rectangle, dimension)
     n = nb_point//nb_rectangle
     for j in range(nb_rectangle):
         cote = [uniform(0, 0.5) for k in range(dimension)]
-
+        cotes.append(cote)
         for i in range(n):
             #print(sommets[j])
             pt = [uniform(sommets[j][k], sommets[j][k] + cote[k]) for k in range(dimension)]
             pts.append(pt)
+    if boole:
+        repartition_rect = []
+        for k, R in enumerate(sommets):
+            rect, cote = [], cotes[k]
+            S = [xi + cote[i] for  i, xi in enumerate(R)]
+            rect.append(R)
+            rect.append(S)
+            repartition_rect.append(rect)
+        return pts, repartition_rect
     
     return pts
 

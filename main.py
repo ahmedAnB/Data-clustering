@@ -7,8 +7,7 @@ from affichage_point import *
 #declaration des constantes
 
 heta = 10**-5
-dimension =2 
-
+dimension = 4
 
 def volumetric_cost(R, S = None):
     """
@@ -66,6 +65,7 @@ def minimum_rect(set_point):
     return bouding box
     """
     R_min, S_max = [], []
+    dimension = len(set_point[0])
     for i in range(dimension):
         L = [point[i] for point in set_point]
         R_min.append(min(L))
@@ -132,14 +132,12 @@ def creation_hash_table(set_point, epsilon):
     it means that the algorithme creates an epsilon-size grid and places every point in its corresponding square
     """
     hash_table = {}#initialisation
-    
     for point in set_point:#each point
         lower = tuple(int(point[i]/epsilon) for i in range(dimension))#compute key
         if lower in hash_table.keys():#add the point in the HT 
             hash_table[lower].append(point)
         else:
             hash_table[lower] = [point]
-
     return hash_table
 
 def stop_condition(hash_table, lenght_set_point):
@@ -179,7 +177,7 @@ def epsilon_variation_algo(set_point, lenght_set_point):
     """
     #initialisation
     hash_table = {}
-    epsilon = 0.1
+    epsilon = 0.2
     hash_table = creation_hash_table(set_point, epsilon)
   #  #while the stopping condition is False
   #  while not stop_condition(hash_table, lenght_set_point):
@@ -347,7 +345,7 @@ def merge_rectangle(nearest_neighboor, set_rectangle):
     S = nearest_neighboor[1]
     R1 = nearest_neighboor[0]
     S1 = nearest_neighboor[1]
-   
+     
     #transform a point in a rectangle
     if not(isinstance(R[0], list)):
         R1 = [R, R]
@@ -404,6 +402,27 @@ def sbs_m_algo_v2(set_point, eta):
         else:
             return set_rectangle
 
+def mv1_algo(set_point, nb_rect_max):
+    """
+    executes step by step the master_algo
+    """
+    #find the perfect hash table
+    hash_table = epsilon_variation_algo(set_point, len(set_point))
+    
+    #convert the hash table in a set of rectangles
+    set_rectangle = [minimum_rect(hash_table[key]) for key in hash_table.keys()]
+    #apply the NN algorithm while the condition is not False
+    print("hash_table fait")
+    while True:
+        print("pour l'instant il ya ", len(set_rectangle), " rectangles")
+        nearest_neighboor = naive_nearest_neighboor(set_rectangle, distance)
+        if len(set_rectangle) > nb_rect_max:
+            #merge the NN
+            set_rectangle = merge_rectangle(nearest_neighboor, set_rectangle)
+        #stop the algorithm
+        else:
+            return set_rectangle
+
 
 def sbs_m_algo(set_point, eta):
     """
@@ -433,6 +452,7 @@ def sbs_m_algo(set_point, eta):
             set_rectangle = merge_rectangle(nearest_neighboor, set_rectangle)
         #stop the algorithm
         else:
+
             return set_rectangle
 
 
