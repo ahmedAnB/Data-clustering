@@ -6,7 +6,7 @@ from affichage_point import *
 
 #declaration des constantes
 
-heta = 10**-5
+eta = 10**-5
 dimension =2 
 
 
@@ -389,7 +389,7 @@ def sbs_m_algo_v2(set_point, eta):
         R,nn1, S, nn2 = less_naive_methode(set_rectangle, array_distance)
         nearest_neighboor = (R, S)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
+        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
         afficher_plsr_pts_rect_2(set_rectangle, set_point, i, nearest_neighboor)
         if len(set_rectangle) > 2:
             #merge the NN
@@ -420,7 +420,7 @@ def sbs_m_algo(set_point, eta):
         i+=1
         nearest_neighboor = naive_nearest_neighboor(set_rectangle)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
+        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
         afficher_plsr_pts_rect_2(set_rectangle, set_point, i, nearest_neighboor)
         if len(set_rectangle) > 2:
             #merge the NN
@@ -450,7 +450,7 @@ def master_algorithme(set_point, heta):
         afficher_plsr_pts_rect_1(set_rectangle, None, i)
         nearest_neighboor = naive_nearest_neighboor(set_rectangle)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
+        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
         i+=1
         if len(set_rectangle) > 2:
             #merge the NN
@@ -480,7 +480,7 @@ def evolution_cost(set_point, eta):
         #afficher_plsr_pts_rect_1(set_rectangle, None, i)
         nearest_neighboor = naive_nearest_neighboor(set_rectangle)
         #if the merge of the NN is better than heta or there is enough rectangle
-        #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
+        #if merge_bonus(nearest_neighboor) > eta or len(set_rectangle) > min_nb_rectangle:
         i+=1
         couts.append(cost_rectangle(set_rectangle))
         valeur_nb_rectangle.append(len(set_rectangle))
@@ -499,9 +499,9 @@ def algo_avec_variation_heta(set_point):
     and computes the evolution of the cost depending on heta
     """
     #initialisation
-    heta = 1
+    eta = 1
     couts = []
-    hetas = []
+    etas = []
     sets = []
 
     while heta > 0.1:
@@ -512,14 +512,14 @@ def algo_avec_variation_heta(set_point):
         cout_rectangle = cost_rectangle(set_rectangle)
         
         #save values of heta and cost, and the set of rectangle
-        hetas.append(heta)
+        etas.append(eta)
         couts.append(cout_rectangle)
         sets.append(set_rectangle)
         
         #decrease the value of heta
-        heta -=10**-1
+        eta -=10**-1
     
-    return hetas, couts, sets
+    return etas, couts, sets
 
 
 
