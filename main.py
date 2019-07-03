@@ -132,8 +132,9 @@ def creation_hash_table(set_point, epsilon):
     it means that the algorithme creates an epsilon-size grid and places every point in its corresponding square
     """
     hash_table = {}#initialisation
+    dim = len(set_point[0])
     for point in set_point:#each point
-        lower = tuple(int(point[i]/epsilon) for i in range(dimension))#compute key
+        lower = tuple(int(point[i]/epsilon) for i in range(dim))#compute key
         if lower in hash_table.keys():#add the point in the HT 
             hash_table[lower].append(point)
         else:
@@ -351,11 +352,11 @@ def merge_rectangle(nearest_neighboor, set_rectangle):
         R1 = [R, R]
     if not(isinstance(S[0], list)):
         S1 = [S, S]
-
+    dim = len(R[0])
     p_min = []
     p_max = []
     #merge the two rectangle
-    for i in range(dimension):
+    for i in range(dim):
         p_min.append(min([R1[0][i], R1[1][i], S1[0][i], S1[1][i]]))
         p_max.append(max([R1[0][i], R1[1][i], S1[0][i], S1[1][i]]))
     
@@ -412,9 +413,9 @@ def mv1_algo(set_point, nb_rect_max):
     #convert the hash table in a set of rectangles
     set_rectangle = [minimum_rect(hash_table[key]) for key in hash_table.keys()]
     #apply the NN algorithm while the condition is not False
-    print("hash_table fait")
+    #print("hash_table fait")
     while True:
-        print("pour l'instant il ya ", len(set_rectangle), " rectangles")
+        #print("pour l'instant il ya ", len(set_rectangle), " rectangles")
         nearest_neighboor = naive_nearest_neighboor(set_rectangle, distance)
         if len(set_rectangle) > nb_rect_max:
             #merge the NN

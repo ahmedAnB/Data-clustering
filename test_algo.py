@@ -4,7 +4,7 @@ from affichage_point import *
 
 def fonction_pricipal():
     n = 1000
-    nb_rectangle = 1 
+    nb_rectangle = 10 
     dimension = 2
 
     #set_point = creation_point_rectangles_2(n, nb_rectangle, dimension)
