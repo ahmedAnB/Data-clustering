@@ -1,5 +1,5 @@
 from random import random, uniform
-
+from main import distance_lp
 dimension = 3
 
 def creation_point(n, dimension):
@@ -37,6 +37,28 @@ def inrectangle(pt, R):
     
     return True
 
+def creation_point_sur_cercle(nb_point, nb_cercle, dimension):
+    """
+    creates points on a circle
+    """
+    
+    pts = []
+    n = nb_point//nb_cercle
+
+    for j in range(nb_cercle):
+        #rayon = uniform(0.1, 0.3)
+        rayon = 1
+        center = [random() for k in range(dimension)]
+        i = 0
+        while i < n:
+            pt = [uniform(center[j]-rayon, center[j] + rayon) for j in range(dimension)]
+            if incercle(pt, center, rayon):
+                distance_c_pt = distance_lp(pt, center)
+                pt_1 = [abs(xi - center[i]) * rayon / distance_c_pt  for i, xi in enumerate(pt)] 
+                pts.append(pt_1)
+                i+=1
+    return pts
+    
 def creation_point_cercle(nb_point, nb_cercle, dimension):
     """
     creates random circles and places points in these circles

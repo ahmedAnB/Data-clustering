@@ -3,12 +3,12 @@ from main import *
 from affichage_point import * 
 
 def fonction_pricipal():
-    n = 10000
-    nb_rectangle = 10 
+    n = 1000
+    nb_rectangle = 1 
     dimension = 2
 
     #set_point = creation_point_rectangles_2(n, nb_rectangle, dimension)
-    set_point = creation_point_cercle(n, nb_rectangle, dimension)
+    set_point = creation_point_sur_cercle(n, nb_rectangle, dimension)
     
     #evolution_heta_cout(set_point)
     set_rectangle = sbs_m_algo(set_point,0.01)

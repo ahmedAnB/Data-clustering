@@ -7,7 +7,7 @@ from affichage_point import *
 #declaration des constantes
 
 heta = 10**-5
-dimension = 4
+dimension =2 
 
 def volumetric_cost(R, S = None):
     """
@@ -177,7 +177,7 @@ def epsilon_variation_algo(set_point, lenght_set_point):
     """
     #initialisation
     hash_table = {}
-    epsilon = 0.2
+    epsilon = 0.1
     hash_table = creation_hash_table(set_point, epsilon)
   #  #while the stopping condition is False
   #  while not stop_condition(hash_table, lenght_set_point):

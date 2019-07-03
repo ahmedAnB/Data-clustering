@@ -46,6 +46,11 @@ def big_test():
     plt.plot(nbrs, fits2)
     plt.show()
 
+def explosion_dimension(dim_max):
+    nb_point = 10
+    for i in dim_max:
+        t1 = time.time()
+        set_rectangle = mv1_algo(set_point, dimension)
 if __name__ == "__main__":
     print("lancement calcul")
     big_test()
