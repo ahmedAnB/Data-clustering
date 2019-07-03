@@ -26,7 +26,7 @@ def fitting(set_rect1, set_rect2, n):
 
 
 def comparaison_theo_exp(nb_rectangle, dimension):
-    n = 1000
+    n = 2000
 
     set_point, ensemble_repartition = creation_point_rectangles_2(n, nb_rectangle, dimension, True)
     print("creation_point_rectangles fait")
@@ -37,7 +37,7 @@ def comparaison_theo_exp(nb_rectangle, dimension):
 
 def big_test():
     dimension = 3 
-    nb_rect_max = 20
+    nb_rect_max = 50
     
     nbrs, fits1, fits2 = [], [], []
     for nb_rect in range(10,nb_rect_max):
@@ -47,8 +47,10 @@ def big_test():
         fits1.append(fit1)
         fits2.append(fit2)
         print("sauvegare réussi pour nb_rect =  ", nb_rect)    
-    plt.plot(nbrs, fits1)
-    plt.plot(nbrs, fits2)
+    plt.plot(nbrs, fits2, label = 'faux positif ')
+    plt.plot(nbrs, fits1, label = 'faux négatif')
+    plt.xlabel('nb de rectangle')
+    plt.ylabel('pourcentage erreur')
     plt.show()
 
 def explosion_dimension(dim_max):
