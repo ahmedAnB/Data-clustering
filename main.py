@@ -86,11 +86,11 @@ def distance(R, S):
         S = S[0]
     if len(R)==1:
         R = R[0]
-    dim = len(R)
     condition_s = not(isinstance(S[0], list))
     condition_r = not(isinstance(R[0], list))
     if condition_r and condition_s:#distance btw 2 points
         result = 0
+        dim = len(R)
         for i in range(dim):
             result += (R[i] - S[i])**2
         return result
@@ -105,6 +105,7 @@ def distance(R, S):
     p_min = []
     p_max = []
     
+    dim = len(R[0])
     for i in range(dim):#definition of volumetric distance
         p_min.append(min([R[0][i], R[1][i], S[0][i], S[1][i]]))
         p_max.append(max([R[0][i], R[1][i], S[0][i], S[1][i]]))

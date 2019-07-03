@@ -36,8 +36,8 @@ def comparaison_theo_exp(nb_rectangle, dimension):
     return fitting(ensemble_repartition, set_rectangle, n), fitting(set_rectangle, ensemble_repartition, n) 
 
 def big_test():
-    dimension = 3 
-    nb_rect_max = 50
+    dimension = 2
+    nb_rect_max = 60
     
     nbrs, fits1, fits2 = [], [], []
     for nb_rect in range(10,nb_rect_max):
@@ -47,8 +47,8 @@ def big_test():
         fits1.append(fit1)
         fits2.append(fit2)
         print("sauvegare réussi pour nb_rect =  ", nb_rect)    
-    plt.plot(nbrs, fits2, label = 'faux positif ')
-    plt.plot(nbrs, fits1, label = 'faux négatif')
+    plt.plot(nbrs, fits2, color= 'blue', label = 'faux positif ')
+    plt.plot(nbrs, fits1, color = 'red', label = 'faux négatif')
     plt.xlabel('nb de rectangle')
     plt.ylabel('pourcentage erreur')
     plt.show()
@@ -60,7 +60,7 @@ def explosion_dimension(dim_max):
     nb_point = 1000
     tms, dims = [], []
     
-    for dim in range(dim_max):
+    for dim in range(2, dim_max):
         print('dimension de calcul : ', dim)
         set_point = creation_point_rectangles(nb_point, nb_point//100, dim)
         t1 = clock()
@@ -74,5 +74,5 @@ def explosion_dimension(dim_max):
 
 if __name__ == "__main__":
     print("lancement calcul")
-    big_test()
-    #explosion_dimension(50)
+    #big_test()
+    explosion_dimension(10)
