@@ -60,8 +60,8 @@ def explosion_dimension(dim_mini, dim_max):
     shows the curse of dimension
     """
     print('lacement calcul')
-    nb_point = 3
-    nb_carre = 1
+    nb_point = 1000
+    nb_carre = 10
     tms, dims = [], []
     save = open('result_algo_2.txt', 'a')
     for dim in range(dim_mini, dim_max):
@@ -87,7 +87,7 @@ def dim_rect_init(dim_mini, dim_max, eps_min, eps_max, eps_pas):
     """
     computes the number the len set_rectangle after the hash table method
     """
-    nb_point = 3
+    nb_point = 1000
     epss, dims, lens = [], [], []
     save = open('save_dim.txt', 'w')
     for eps in numpy.arange(eps_min, eps_max, eps_pas):
@@ -114,5 +114,5 @@ def dim_rect_init(dim_mini, dim_max, eps_min, eps_max, eps_pas):
 
 if __name__ == "__main__":
     #big_test()
-    explosion_dimension(2,3)
-    #dim_rect_init(2,110,0.5,0.61,0.01)
+    #explosion_dimension(2,5)
+    dim_rect_init(2,20,0.1,0.61,0.05)

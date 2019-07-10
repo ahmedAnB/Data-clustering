@@ -53,17 +53,17 @@ def search_and_destroy(rect_1,rect_2, sl, set_rectangle, distance_used):
         if rect_i != rect_1 and rect_i!= rect_2:
             clef_1 =(distance_used(rect_1, rect_i), {rect_i1, rect_11})
             clef_2 = (distance_used(rect_2, rect_i), {rect_i1, rect_21})
-            print('sl1 avant suppression', sl1)
-            print(clef_1)
-            print(clef_2)
+#            print('sl1 avant suppression', sl1)
+#            print(clef_1)
+#            print(clef_2)
             if clef_1 == clef_2:
                 sl1.remove(clef_1)
             else:
                 sl1.remove(clef_2)
                 sl1.remove(clef_1)
-            print("suppresion reussi")
+#            print("suppresion reussi")
     sl1.remove((distance_used(rect_2,rect_1), {rect_11, rect_21}))
-    print("destruction reussi") 
+#    print("destruction reussi") 
     return sl1
 def ajout_merge_rectangle(merged_rectangle, sl1, set_rectangle_1, distance_used):
     '''

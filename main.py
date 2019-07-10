@@ -185,7 +185,6 @@ def epsilon_variation_algo(set_point, inutile,  epsilon = 0.1):
   #      #decrease epsilon and create the HT
   #      epsilon /= 2
   #      hash_table = creation_hash_table(set_point, epsilon)
-    
     return hash_table
 def premiers_rectangles(set_point, epsilon = 0.1):
     '''
@@ -364,7 +363,6 @@ def merge_rectangle(nearest_neighboor, set_rectangle, boole = False):
         p_min.append(min([R1[0][i], R1[1][i], S1[0][i], S1[1][i]]))
         p_max.append(max([R1[0][i], R1[1][i], S1[0][i], S1[1][i]]))
     
-    print('\n S', S, "\n R", R, "\n set_rectangle1", set_rectangle1)
     if boole:
         return [p_min, p_max]
     #update the set of rectangles
