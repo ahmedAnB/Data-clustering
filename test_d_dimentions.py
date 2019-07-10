@@ -3,8 +3,10 @@ from main import *
 from affichage_point import * 
 from creation_point import *
 from time import clock
-
-
+from fonctions_principal import mv1_algo_opti
+import numpy
+from mpl_toolkits.mplot3d import axes3d
+import matplotlib.pyplot as plt
 
 def fitting(set_rect1, set_rect2, n):
     """
@@ -53,26 +55,64 @@ def big_test():
     plt.ylabel('pourcentage erreur')
     plt.show()
 
-def explosion_dimension(dim_max):
+def explosion_dimension(dim_mini, dim_max):
     """
     shows the curse of dimension
     """
-    nb_point = 1000
+    print('lacement calcul')
+    nb_point = 3
+    nb_carre = 1
     tms, dims = [], []
-    
-    for dim in range(2, dim_max):
+    save = open('result_algo_2.txt', 'a')
+    for dim in range(dim_mini, dim_max):
         print('dimension de calcul : ', dim)
-        set_point = creation_point_rectangles(nb_point, nb_point//100, dim)
+        set_point = creation_point_rectangles_2(nb_point, nb_carre, dim)
         t1 = clock()
-        ht = mv1_algo(set_point, nb_point//100 )
+        #ht = mv1_algo(set_point, 10 )
+        ht = mv1_algo_opti(set_point, nb_carre, distance)
         t2 = clock()
         tms.append(t2 - t1)
         dims.append(dim)
+        save.write('\n' + str(dim) + '   '+str(t2 - t1))
+        print('ecriture ok')
+    save.close()
     
+    print(tms, dims)
     plt.plot(dims, tms)
+    plt.xlabel('dimension')
+    plt.ylabel(' temps de calcul')
+    plt.title('calcul evolution temps/dimension pour n = 5000 et eps = 0.2')
+
+def dim_rect_init(dim_mini, dim_max, eps_min, eps_max, eps_pas):
+    """
+    computes the number the len set_rectangle after the hash table method
+    """
+    nb_point = 3
+    epss, dims, lens = [], [], []
+    save = open('save_dim.txt', 'w')
+    for eps in numpy.arange(eps_min, eps_max, eps_pas):
+        for dim in range(dim_mini, dim_max):
+            print('dimension de calcul : ', dim)
+            set_point = creation_point_rectangles(nb_point, 10, dim)
+            ht = epsilon_variation_algo(set_point, len(set_point),eps)
+            dims.append(dim)
+            lens.append(len(ht.keys()))
+            epss.append(eps)
+            save.write('\n' + str(dim) + ','+str(len(ht.keys()))+','+str(eps))
+            print('ecriture ok')
+    
+    save.close()
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    ax.scatter(dims, epss, lens)
+    ax.set_xlabel('dimension')
+    ax.set_zlabel('longeur table de hachage')
+    ax.set_ylabel('epsilon')
+    ax.text2D(0.05, 0.95, "Variation longeure HT avec epsilon, dimension, n =  1000", transform=ax.transAxes) 
     plt.show()
+   
 
 if __name__ == "__main__":
-    print("lancement calcul")
     #big_test()
-    explosion_dimension(10)
+    explosion_dimension(2,3)
+    #dim_rect_init(2,110,0.5,0.61,0.01)

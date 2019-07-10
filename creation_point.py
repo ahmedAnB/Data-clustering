@@ -106,7 +106,7 @@ def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, boole = False
         cotes.append(cote)
         for i in range(n):
             #print(sommets[j])
-            pt = [uniform(sommets[j][k], sommets[j][k] + cote[k]) for k in range(dimension)]
+            pt = [round(uniform(sommets[j][k], sommets[j][k] + cote[k]), 2) for k in range(dimension)]
             pts.append(pt)
     if boole:
         repartition_rect = []

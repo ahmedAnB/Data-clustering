@@ -1,26 +1,28 @@
 from timeit import timeit
 from sys import argv
 from math import sqrt
-
+from time import clock
 from affichage_point import *
 
 #declaration des constantes
 
 heta = 10**-5
-dimension =2 
+dimension = 2 
 
-
-def volumetric_cost(R):
+def volumetric_cost(R, S = None):
     """
     computes the volume of a Rectangle R
     """
-    if not(isinstance(R[0],list)):
-        return 0
+    if S is None:
+        if not(isinstance(R[0],list)):
+            return 0
+        else:
+            result = 0
+            for xi_lower, xi_upper in zip(R[0],R[1]):
+                result *= abs(xi_upper - xi_lower)
+            return result
     else:
-        result = 0
-        for xi_lower, xi_upper in zip(R[0],R[1]):
-            result *= abs(xi_upper - xi_lower)
-        return result
+        return abs(volumetric_cost(R) - volumetric_cost(S))
 
 
 def merge_gain_volumme(R, S):
@@ -30,7 +32,7 @@ def merge_gain_volumme(R, S):
     return volumetric_cost(merge(R,S)) - volumetric_cost(R) - volumetric_cost(S)
 
 
-def distance_lp(R,S, p):
+def distance_lp(R,S, p = 2):
     """
     return the Lp distance btw R and S
     """
@@ -42,7 +44,7 @@ def distance_lp(R,S, p):
        S1= S[0]
     result = 0
     
-    for ri, si in zip(R, S):
+    for ri, si in zip(R1, S1):
         result += abs(ri -si)**p
     
     return result ** (1/p)
@@ -53,30 +55,32 @@ def rect_center(S):
     compute the center of a rectangle
     """
     center = []
+    dim = len(S[O])
     for i in dimension:
         center.append(abs(S[0][i] - S[1][i])/2)
     return center
 
-def minimum_rect(set_point, boole = False):
+def minimum_rect(set_point, bool = False):
     """
     find the minimum rectangle for a set of point
     return bouding box
     """
     R_min, S_max = [], []
+    dimension = len(set_point[0])
     for i in range(dimension):
         L = [point[i] for point in set_point]
         R_min.append(min(L))
         S_max.append(max(L))
-    if boole:
-        return([R_min,S_max])
-    else:
-        return((R_min,S_max))
+    if bool: 
+        return [R_min, S_max]
+    return((R_min,S_max))
 
 
 def distance(R, S):
     """
     compute the square distance  between two rectangles R and S
     """
+    t1 = clock()
     if R == None:
         return 0
     if S == None: 
@@ -89,7 +93,8 @@ def distance(R, S):
     condition_r = not(isinstance(R[0], list))
     if condition_r and condition_s:#distance btw 2 points
         result = 0
-        for i in range(dimension):
+        dim = len(R)
+        for i in range(dim):
             result += (R[i] - S[i])**2
         return result
     elif condition_s:
@@ -103,10 +108,12 @@ def distance(R, S):
     p_min = []
     p_max = []
     
-    for i in range(dimension):#definition of volumetric distance
+    dim = len(R[0])
+    for i in range(dim):#definition of volumetric distance
         p_min.append(min([R[0][i], R[1][i], S[0][i], S[1][i]]))
         p_max.append(max([R[0][i], R[1][i], S[0][i], S[1][i]]))
-    
+    t2 = clock()
+    #print("tps calcul distance : ", t2 - t1)
     return distance(p_min, p_max)
 
 
@@ -132,14 +139,13 @@ def creation_hash_table(set_point, epsilon):
     it means that the algorithme creates an epsilon-size grid and places every point in its corresponding square
     """
     hash_table = {}#initialisation
-    
+    dim = len(set_point[0])
     for point in set_point:#each point
-        lower = tuple(int(point[i]/epsilon) for i in range(dimension))#compute key
+        lower = tuple(int(point[i]/epsilon) for i in range(dim))#compute key
         if lower in hash_table.keys():#add the point in the HT 
             hash_table[lower].append(point)
         else:
             hash_table[lower] = [point]
-
     return hash_table
 
 def stop_condition(hash_table, lenght_set_point):
@@ -172,9 +178,9 @@ def stop_condition_1(hash_table, lenght_set_point, epsilon):
         return False
 
 
-def epsilon_variation_algo(set_point, inutile,  epsilon = 0.1):
+def epsilon_variation_algo(set_point, lenght_set_point, epsilon = 0.1):
     """
-    the algoritme decreases epsilon in order to find the perfect size for the hash table
+    the algoritme decreases epsion in order to find the perfect size for the hash table
     the perfect size condition is also the stopping_condition
     """
     #initialisation
@@ -187,17 +193,18 @@ def epsilon_variation_algo(set_point, inutile,  epsilon = 0.1):
   #      hash_table = creation_hash_table(set_point, epsilon)
     
     return hash_table
-def premiers_rectangles(set_point, epsilon = 0.1):
-    '''
-    return the first rectangles of an set of point
-    '''
-    
-    hash_table = epsilon_variation_algo(set_point, epsilon)
+
+def premiers_rectangles(set_point):
+    """
+    find the first set_of rectangles by using hash table method
+    """
+    #find the perfect hash table
+    hash_table = epsilon_variation_algo(set_point, len(set_point))
+
+    #convert the hash table in a set of rectangles
     set_rectangle = [minimum_rect(hash_table[key], True) for key in hash_table.keys()]
     
     return set_rectangle
-
-
 def naive_nearest_neighboor(set_rectangle, distance_used = distance):
     """
     This algorithme find the nearest neigboor by testing every combination
@@ -212,13 +219,21 @@ def naive_nearest_neighboor(set_rectangle, distance_used = distance):
     nearest_neighboor = (set_rectangle[0], set_rectangle[1])
     
     #testing every combination
+    t1 = clock()
     for i in range(n):
+        t2 = clock()
         for j in range(i+1,n):
+            t3 = clock()
             dist = distance_used(set_rectangle[i], set_rectangle[j])
             if dist < min_dist:
                 nearest_neighboor = (set_rectangle[i], set_rectangle[j])
                 min_dist = dist
-
+            t4 = clock()
+            #print("calcul dans double boucle ", t4 - t3)
+        t4 = clock()
+        #print("calcul 1 ere boucle", t4 - t2)
+    t4 = clock()
+    #print('calcul double boucle', t1 - t4)
     return nearest_neighboor
 
 def init_array_distance(set_rectangle, distance_used = distance):
@@ -242,31 +257,33 @@ def min_ij_arrray(array, set_rectangle, n):
     """
     array1 = array.copy()
     min_dist = array[0][1]
-    nearest_neighboor = (set_rectangle[0], set_rectangle[1])   
+    nearest_neighboor = (set_rectangle[0], set_rectangle[1], 0, 1)   
     
     for i in range(n):
         for j in range(i+1, n):
-       #     print("i = ",i, " j = ", j," n = ", n)
-       #     print("min = ", min_dist)
+            print("i = ",i, " j = ", j," n = ", n)
             dist = array1[i][j]
+            print("dist " , dist, " min_dist ", min_dist) 
             if dist < min_dist:
                 nearest_neighboor = (set_rectangle[i], set_rectangle[j], i, j)
                 min_dist = dist
-
+                print("new min_dist ", min_dist)
+    print("######################################################")
     return nearest_neighboor[2], nearest_neighboor[3]
 
 def merge_array(R, i, S, j,  array_distance, set_rectangle, distance_used):
     """
     merge two rectangles (column i and j)
     """
-    print(R in set_rectangle, "MA")
-    print(S in set_rectangle)
+ #   print(R in set_rectangle, "MA")
+ #   print(S in set_rectangle)
     copy_set_rectangle = set_rectangle.copy()
     array1 = array_distance.copy()
     #initialisation
     R1 = R
     S1 = S
-   
+    if len(set_rectangle) == 1:
+        return
     #transform a point in a rectangle
     if not(isinstance(R[0], list)):
         R1 = [R, R]
@@ -281,27 +298,31 @@ def merge_array(R, i, S, j,  array_distance, set_rectangle, distance_used):
         p_max.append(max([R1[0][i], R1[1][i], S1[0][i], S1[1][i]]))
     
     RUS = [p_min, p_max]
-    print(S in copy_set_rectangle, 's in set_rectangle')   
+   # print(S in copy_set_rectangle, 's in set_rectangle')   
     copie_2_set = [rect for rect in copy_set_rectangle if rect != S and rect != R] 
-    print(S in copie_2_set, R in copie_2_set,  's et r in set_rectangle')
+   # print(S in copie_2_set, R in copie_2_set,  's et r in set_rectangle')
 
     
     
     cR = array1[i]
     cS = array1[j]
-    copie_array = [array1[k] for k in range(len(array1)) if (k != i and k != j)]
-    for r in copie_array:
-        print(len(r), len(copie_2_set))
+    #copie_array = [array1[k] for k in range(len(array1)) if (k != i and k != j)]
+    copie_array = [[array1[k][l] for l in range(len(array1[k])) if l != i and l !=j] for k in range(len(array1)) if (k != i and k != j)] 
+    print(len(copie_array))
+    
     dist_RUS = []
-    print("longeur copie array : ", len(copie_array), len(array1))
-    for k, rect  in enumerate(copie_2_set):
-        print("i = ", i, 'j = ', j,"k = ", k ,"len(copie) = ", len(copie_array),"len(copie[k])", len(copie_array[k])) 
-        print(  "copie_array[k][i] = ",  copie_array[k][i], "copie_array[k][j-1] = ",copie_array[k][j-1])
-        del copie_array[k][i]
-        del copie_array[k][j-1]
-        dist_RUS.append(distance_used(rect, RUS))
-        copie_array[k].append(0)
-
+    
+    for indice, column in enumerate(copie_array):
+       # print("indice ", indice," len(copie_2_set) ", len(copie_2_set)," len(copie_array) ",len(copie_array))
+        dist = distance_used(copie_2_set[indice], RUS)
+        column.append(dist)
+        dist_RUS.append(dist)
+        
+    dist_RUS.append(0) 
+    
+   # ddfor r in copie_array:
+   #     print(len(r), len(copie_2_set))
+    
     copie_array.append(dist_RUS)
     copie_2_set.append(RUS)   
     
@@ -340,7 +361,7 @@ def merge_bonus(points):
     
     return dR_S - (dS + dR)
 
-def merge_rectangle(nearest_neighboor, set_rectangle, boole = False):
+def merge_rectangle(nearest_neighboor, set_rectangle, que_la_fusion = False):
     """
     merge the 2 rectancle in nearest_neigboor
     """
@@ -350,22 +371,21 @@ def merge_rectangle(nearest_neighboor, set_rectangle, boole = False):
     R1 = nearest_neighboor[0]
     S1 = nearest_neighboor[1]
     set_rectangle1 = set_rectangle.copy()
-    dimension = len(R)
+
     #transform a point in a rectangle
     if not(isinstance(R[0], list)):
         R1 = [R, R]
     if not(isinstance(S[0], list)):
         S1 = [S, S]
-
+    dim = len(R[0])
     p_min = []
     p_max = []
     #merge the two rectangle
-    for i in range(dimension):
+    for i in range(dim):
         p_min.append(min([R1[0][i], R1[1][i], S1[0][i], S1[1][i]]))
         p_max.append(max([R1[0][i], R1[1][i], S1[0][i], S1[1][i]]))
     
-    print('\n S', S, "\n R", R, "\n set_rectangle1", set_rectangle1)
-    if boole:
+    if que_la_fusion:
         return [p_min, p_max]
     #update the set of rectangles
     set_rectangle1.remove(S)
@@ -374,29 +394,11 @@ def merge_rectangle(nearest_neighboor, set_rectangle, boole = False):
     
     return(set_rectangle1)
 
-def mv1_algo(set_point, nb_rectangle):
-    """
-    working version of previous algorithme
-    """
-    hash_table = epsilon_variation_algo(set_point, len(set_point))
-    
-    min_nb_rectangle = sqrt(len(set_point))
-    
-    set_rectangle = [minimum_rect(hash_table[key]) for key in hash_table.keys()]
-    
-    while len(set_rectangle) > nb_rectangle:
-        nearest_neighboor = naive_nearest_neighboor(set_rectangle)
-        set_rectangle = merge_rectangle(nearest_neighboor, set_rectangle)
-    
-    return set_rectangle
-
-   
-    
 def sbs_m_algo_v2(set_point, eta):
     """
-    executes step by step the master_algo using array_distance
+        executes step by step the master_algo using array_distance
     """
-    distance_used = distance
+    distance_used = volumetric_cost
 
 
     #find the perfect hash table
@@ -419,7 +421,7 @@ def sbs_m_algo_v2(set_point, eta):
         nearest_neighboor = (R, S)
         #if the merge of the NN is better than heta or there is enough rectangle
         #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
-        afficher_plsr_pts_rect_2(set_rectangle, set_point, i, nearest_neighboor)
+        afficher_plsr_pts_rect_3(set_rectangle, set_point, i, nearest_neighboor, [R[0],S[0]])
         if len(set_rectangle) > 2:
             #merge the NN
             array_distance, set_rectangle = merge_array(R, nn1, S, nn2, array_distance, set_rectangle, distance_used)
@@ -427,6 +429,31 @@ def sbs_m_algo_v2(set_point, eta):
         else:
             return set_rectangle
 
+def mv1_algo(set_point, nb_rect_max):
+    """
+    executes step by step the master_algo
+    """
+    #find the perfect hash table
+    hash_table = epsilon_variation_algo(set_point, len(set_point))
+    
+    #convert the hash table in a set of rectangles
+    set_rectangle = [minimum_rect(hash_table[key]) for key in hash_table.keys()]
+    #apply the NN algorithm while the condition is not False
+    #print("hash_table fait")
+    while True:
+        t1 = clock()
+        print("pour l'instant il ya ", len(set_rectangle), " rectangles")
+        nearest_neighboor = naive_nearest_neighboor(set_rectangle, distance)
+        t2 = clock()
+        if len(set_rectangle) > nb_rect_max:
+            #merge the NN
+            set_rectangle = merge_rectangle(nearest_neighboor, set_rectangle)
+            t3 = clock()
+        #stop the algorithm
+        else:
+            return set_rectangle
+        print("temps nearest_neighboor : ", t2 - t1, ' s')
+        print("temps merge_rectangle : ", t3 - t2, ' s')
 
 def sbs_m_algo(set_point, eta):
     """
@@ -447,15 +474,16 @@ def sbs_m_algo(set_point, eta):
         i+=1
         afficher_plsr_pts_rect_1(set_rectangle, set_point, i)
         i+=1
-        nearest_neighboor = naive_nearest_neighboor(set_rectangle)
+        nearest_neighboor = naive_nearest_neighboor(set_rectangle, distance)
         #if the merge of the NN is better than heta or there is enough rectangle
         #if merge_bonus(nearest_neighboor) > heta or len(set_rectangle) > min_nb_rectangle:
-        afficher_plsr_pts_rect_2(set_rectangle, set_point, i, nearest_neighboor)
+        afficher_plsr_pts_rect_3(set_rectangle, set_point, i, nearest_neighboor, [nearest_neighboor[0][0], nearest_neighboor[1][0]])
         if len(set_rectangle) > 2:
             #merge the NN
             set_rectangle = merge_rectangle(nearest_neighboor, set_rectangle)
         #stop the algorithm
         else:
+
             return set_rectangle
 
 
