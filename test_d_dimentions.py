@@ -111,8 +111,32 @@ def dim_rect_init(dim_mini, dim_max, eps_min, eps_max, eps_pas):
     ax.text2D(0.05, 0.95, "Variation longeure HT avec epsilon, dimension, n =  1000", transform=ax.transAxes) 
     plt.show()
    
-
+def dim_rect_mm_graphe(dim_mini, dim_max, eps_min, eps_max, eps_pas):
+    """
+    computes the number the len set_rectangle after the hash table method
+    """
+    nb_point = 1000
+    epss, dims, lens = [], [], []
+    save = open('save_dim.txt', 'w')
+    for eps in numpy.arange(eps_min, eps_max, eps_pas):
+        len_eps = []
+        dims_eps = []
+        for dim in range(dim_mini, dim_max):
+            print('dimension de calcul : ', dim)
+            set_point = creation_point_rectangles(nb_point, 10, dim)
+            ht = epsilon_variation_algo(set_point, len(set_point),eps)
+            len_eps.append(len(ht.keys()))
+            dims_eps.append(dim)
+        #print(len_eps, dims_eps)
+        lab = "epsilon = " + str(eps)
+        plt.plot(dims_eps, len_eps, label = lab)
+    
+    plt.xlabel('dimension')
+    plt.ylabel('lenght hash table')
+    plt.title('lenght variation depending on dimension and epsilon, n = 1000')
+    plt.legend(loc='lower right') 
+    plt.show()
 if __name__ == "__main__":
     #big_test()
-    explosion_dimension(2,7)
-    #dim_rect_init(2,20,0.1,0.61,0.05)
+    #explosion_dimension(2,7)
+    dim_rect_mm_graphe(2,160,0.1,1.1,0.1)
