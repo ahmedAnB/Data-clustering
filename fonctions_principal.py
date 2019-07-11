@@ -116,3 +116,22 @@ def mv1_algo_opti(set_point, nb_rect_max, distance_used):
         sl, set_rectangle = sl_merge_rectangle(sl, set_rectangle, nn, distance_used)
 #        print('sl', sl, 'set_rectangle', set_rectangle)
     return set_rectangle
+
+def ss_mv1_opti(set_point, nb_rect_max, distance_used):
+    """
+    mv1 algo with sorted list
+    """
+    set_rectangle = premiers_rectangles(set_point)
+    sl = init_sl(set_rectangle, distance_used)
+    i = 0
+    while len(set_rectangle) > nb_rect_max:
+        i += 1
+        afficher_plsr_pts_rect_1(set_rectangle, set_point, i)
+        i+=1
+        nn = sl[0][1]
+        afficher_plsr_pts_rect_2(set_rectangle, set_point, i, conv_list(nn))
+        sl, set_rectangle = sl_merge_rectangle(sl, set_rectangle, nn, distance_used)
+    return set_rectangle
+
+
+

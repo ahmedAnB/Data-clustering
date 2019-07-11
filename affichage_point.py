@@ -85,7 +85,7 @@ def afficher_plsr_pts_rect_2(set_rectangles, set_points, i, red_rectangles):
                     currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'crimson'))
                 else:
                     currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'black'))
-    plt.show()
+    #plt.show()
     date = datetime.datetime.now()
     num =  str(i)
     #plt.savefig("./animation/"+num+'.png')
@@ -110,7 +110,7 @@ def afficher_plsr_pts_rect_1(set_rectangles, set_points, i):
                 R = afficher_rectangle(rect)
 #               print(R)
                 currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1))
-    plt.show()
+    #plt.show()
     date = datetime.datetime.now()
     num = str(i)
     plt.savefig("./animation/"+num+'.png')

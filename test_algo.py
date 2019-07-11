@@ -5,8 +5,8 @@ from fonctions_principal import *
 
 
 def fonction_pricipal():
-    n = 5000
-    nb_rectangle = 30
+    n = 1000
+    nb_rectangle = 10
     dimension = 2
 
     set_point = creation_point_rectangles_2(n, nb_rectangle, dimension)
@@ -14,7 +14,7 @@ def fonction_pricipal():
     
     #evolution_heta_cout(set_point)
     #set_rectangle = sbs_m_algo(set_point,0.01)
-    set_rectangle = mv1_algo_opti(set_point, nb_rectangle, distance)
+    set_rectangle = ss_mv1_opti(set_point, nb_rectangle, distance)
     #evolution_nb_rectangle_cost(set_point)
     
     print(len(set_rectangle))

@@ -4,11 +4,6 @@ from math import sqrt
 
 from affichage_point import *
 
-#declaration des constantes
-
-heta = 10**-5
-dimension =2 
-
 
 def volumetric_cost(R):
     """
@@ -53,6 +48,7 @@ def rect_center(S):
     compute the center of a rectangle
     """
     center = []
+    dimension = len(S[0])
     for i in dimension:
         center.append(abs(S[0][i] - S[1][i])/2)
     return center
@@ -62,6 +58,7 @@ def minimum_rect(set_point, boole = False):
     find the minimum rectangle for a set of point
     return bouding box
     """
+    dimension = len(set_point[0])
     R_min, S_max = [], []
     for i in range(dimension):
         L = [point[i] for point in set_point]
@@ -85,10 +82,13 @@ def distance(R, S):
         S = S[0]
     if len(R)==1:
         R = R[0]
+     
     condition_s = not(isinstance(S[0], list))
     condition_r = not(isinstance(R[0], list))
+    #print('R', R)# 'dimension', dimension)
     if condition_r and condition_s:#distance btw 2 points
         result = 0
+        dimension = len(R)
         for i in range(dimension):
             result += (R[i] - S[i])**2
         return result
@@ -102,7 +102,7 @@ def distance(R, S):
 
     p_min = []
     p_max = []
-    
+    dimension = len(R[0])
     for i in range(dimension):#definition of volumetric distance
         p_min.append(min([R[0][i], R[1][i], S[0][i], S[1][i]]))
         p_max.append(max([R[0][i], R[1][i], S[0][i], S[1][i]]))
@@ -132,7 +132,8 @@ def creation_hash_table(set_point, epsilon):
     it means that the algorithme creates an epsilon-size grid and places every point in its corresponding square
     """
     hash_table = {}#initialisation
-    
+    dimension = len(set_point[0])
+
     for point in set_point:#each point
         lower = tuple(int(point[i]/epsilon) for i in range(dimension))#compute key
         if lower in hash_table.keys():#add the point in the HT 
@@ -265,13 +266,13 @@ def merge_array(R, i, S, j,  array_distance, set_rectangle, distance_used):
     #initialisation
     R1 = R
     S1 = S
-   
+
     #transform a point in a rectangle
     if not(isinstance(R[0], list)):
         R1 = [R, R]
     if not(isinstance(S[0], list)):
         S1 = [S, S]
-
+    dimension = len(R1[0])
     p_min = []
     p_max = []
     #merge the two rectangle
@@ -374,7 +375,7 @@ def merge_rectangle(nearest_neighboor, set_rectangle, boole = False):
 
 def mv1_algo(set_point, nb_rectangle):
     """
-    working version of previous algorithme
+    working version of previous algorithm
     """
     hash_table = epsilon_variation_algo(set_point, len(set_point))
     

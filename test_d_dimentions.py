@@ -114,5 +114,5 @@ def dim_rect_init(dim_mini, dim_max, eps_min, eps_max, eps_pas):
 
 if __name__ == "__main__":
     #big_test()
-    #explosion_dimension(2,5)
-    dim_rect_init(2,20,0.1,0.61,0.05)
+    explosion_dimension(2,7)
+    #dim_rect_init(2,20,0.1,0.61,0.05)
