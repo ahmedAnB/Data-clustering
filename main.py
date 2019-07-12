@@ -103,6 +103,8 @@ def distance(R, S):
     p_min = []
     p_max = []
     dimension = len(R[0])
+#    print(dimension, len(R), len(R[0]), len(R[1]), len(S[0]), len(S[1]))
+#    print(R, S)
     for i in range(dimension):#definition of volumetric distance
         p_min.append(min([R[0][i], R[1][i], S[0][i], S[1][i]]))
         p_max.append(max([R[0][i], R[1][i], S[0][i], S[1][i]]))
@@ -350,7 +352,7 @@ def merge_rectangle(nearest_neighboor, set_rectangle, boole = False):
     R1 = nearest_neighboor[0]
     S1 = nearest_neighboor[1]
     set_rectangle1 = set_rectangle.copy()
-    dimension = len(R)
+    dimension = len(R[0])
     #transform a point in a rectangle
     if not(isinstance(R[0], list)):
         R1 = [R, R]
@@ -382,7 +384,6 @@ def mv1_algo(set_point, nb_rectangle):
     min_nb_rectangle = sqrt(len(set_point))
     
     set_rectangle = [minimum_rect(hash_table[key]) for key in hash_table.keys()]
-    
     while len(set_rectangle) > nb_rectangle:
         nearest_neighboor = naive_nearest_neighboor(set_rectangle)
         set_rectangle = merge_rectangle(nearest_neighboor, set_rectangle)
@@ -548,6 +549,7 @@ def algo_avec_variation_heta(set_point):
         heta -=10**-1
     
     return hetas, couts, sets
+
 
 
 

@@ -13,8 +13,8 @@ def fonction_pricipal():
     #set_point = creation_point_sur_cercle(n, nb_rectangle, dimension)
     
     #evolution_heta_cout(set_point)
-    #set_rectangle = sbs_m_algo(set_point,0.01)
-    set_rectangle = ss_mv1_opti(set_point, nb_rectangle, distance)
+    set_rectangle = sbs_m_algo(set_point,0.01)
+    #set_rectangle = ss_mv1_opti(set_point, nb_rectangle, distance)
     #evolution_nb_rectangle_cost(set_point)
     
     print(len(set_rectangle))

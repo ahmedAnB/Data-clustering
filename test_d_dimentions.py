@@ -89,7 +89,7 @@ def dim_rect_init(dim_mini, dim_max, eps_min, eps_max, eps_pas):
     """
     nb_point = 1000
     epss, dims, lens = [], [], []
-    save = open('save_dim.txt', 'w')
+    save = open('save_dimi_opti.txt', 'w')
     for eps in numpy.arange(eps_min, eps_max, eps_pas):
         for dim in range(dim_mini, dim_max):
             print('dimension de calcul : ', dim)
@@ -138,5 +138,5 @@ def dim_rect_mm_graphe(dim_mini, dim_max, eps_min, eps_max, eps_pas):
     plt.show()
 if __name__ == "__main__":
     #big_test()
-    #explosion_dimension(2,7)
-    dim_rect_mm_graphe(2,160,0.1,1.1,0.1)
+    explosion_dimension(2,9)
+    #dim_rect_mm_graphe(2,160,0.1,1.1,0.1)
