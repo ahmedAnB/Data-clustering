@@ -60,8 +60,8 @@ def explosion_dimension(dim_mini, dim_max):
     shows the curse of dimension
     """
     print('lacement calcul')
-    nb_point = 1000
-    nb_carre = 10
+    nb_point = 5000
+    nb_carre = 50
     tms, dims = [], []
     save = open('result_algo_2.txt', 'a')
     for dim in range(dim_mini, dim_max):
@@ -138,5 +138,5 @@ def dim_rect_mm_graphe(dim_mini, dim_max, eps_min, eps_max, eps_pas):
     plt.show()
 if __name__ == "__main__":
     #big_test()
-    explosion_dimension(2,9)
+    explosion_dimension(2,11)
     #dim_rect_mm_graphe(2,160,0.1,1.1,0.1)
