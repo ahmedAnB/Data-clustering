@@ -34,67 +34,78 @@ def afficher_XY(X, Y):
     plt.scatter(X,Y, s = size)
     plt.show()
 
-def afficher_plsr_pts_rect_3(set_rectangles, set_points, i, red_rectangles, droite):
+def afficher_plsr_pts_rect_3(set_rectangles, set_points, i, red_rectangles, droite, show_image = False):
     """
-    Displays reactangles and/or points in 2 dimension
+    Displays set of rectangle, a set of point, 2 other rectangles and a ligne
+    used for plotting the 2 rectangles that will be merged
+    and save the image
     """
     X, Y, ensembles_rect = None, None, None
     plt.figure()
     currentAxis = plt.gca()
     if droite is not None:
+        #plot the line
         X1, Y1 = afficher_points_2D(droite)
         plt.plot(X1, Y1, color = 'red')
+    
     if set_points is not None:
+        #plot the set of point
         X,Y = afficher_points_2D(set_points)
         plt.scatter(X, Y, s=size)
+    
     if set_rectangles is not None:
+        #plot the set of rectangle in black and the two merging rectangles in red
         ensembles_rect = []
         for rect in set_rectangles:
             if isinstance(rect[0],list):
                 R = afficher_rectangle(rect)
-#               print(R)
                 if rect in red_rectangles:
                     currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'crimson'))
                 else:
                     currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'black'))
-    #plt.show()
+    #save the image
+    if show_image:
+        plt.show()
     date = datetime.datetime.now()
     num =  str(i)
     plt.savefig("./animation/"+num+'.png')
     print("sauvegarde n° " + num + " réussi")
 
 
-def afficher_plsr_pts_rect_2(set_rectangles, set_points, i, red_rectangles):
+def afficher_plsr_pts_rect_2(set_rectangles, set_points, i, red_rectangles, show_image = False, save_image = True):
     """
-    Displays reactangles and/or points in 2 dimension
+    Displays set_reactangles, set_points, and the two merging rectangle
     """
     X, Y, ensembles_rect = None, None, None
     plt.figure()
     currentAxis = plt.gca()
 
     if set_points is not None:
+        #display the set of point
         X,Y = afficher_points_2D(set_points)
         plt.scatter(X, Y, s=size)
     if set_rectangles is not None:
+        #display the set of rectangle
         ensembles_rect = []
         for rect in set_rectangles:
             if isinstance(rect[0],list):
                 R = afficher_rectangle(rect)
-#               print(R)
                 if rect in red_rectangles:
                     currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'crimson'))
                 else:
                     currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1, color = 'black'))
-    #plt.show()
-    date = datetime.datetime.now()
-    num =  str(i)
-    #plt.savefig("./animation/"+num+'.png')
-    print("sauvegarde n° " + num + " réussi")
+    if show_image:
+        plt.show()
+    if save_image:
+        num =  str(i)
+        plt.savefig("./animation/"+num+'.png')
+        print("sauvegarde n° " + num + " réussi")
+    
+    return True
 
-
-def afficher_plsr_pts_rect_1(set_rectangles, set_points, i):
+def afficher_plsr_pts_rect_1(set_rectangles, set_points, i, show_image = False, save_image = True):
     """
-    Displays reactangles and/or points in 2 dimension
+    Displays set_rectangles, set_points
     """
     X, Y, ensembles_rect = None, None, None
     plt.figure()
@@ -108,13 +119,17 @@ def afficher_plsr_pts_rect_1(set_rectangles, set_points, i):
         for rect in set_rectangles:
             if isinstance(rect[0],list):
                 R = afficher_rectangle(rect)
-#               print(R)
                 currentAxis.add_patch(Rectangle((R[0], R[1]), R[2], R[3], fill=None, alpha=1))
-    #plt.show()
-    date = datetime.datetime.now()
-    num = str(i)
-    plt.savefig("./animation/"+num+'.png')
-    print("sauvegarde n° " + num + "réussi")
+    if show_image:
+        plt.show()
+    if save_image:
+        num =  str(i)
+        plt.savefig("./animation/"+num+'.png')
+        print("sauvegarde n° " + num + " réussi")
+    
+    return True
+
+
 
 
 def afficher_plsr_pts_rect(set_rectangles, set_points):

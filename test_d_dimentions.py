@@ -19,6 +19,7 @@ def fitting(set_rect1, set_rect2, n):
         for rect in set_rect2:
             if inrectangle(pt, rect):
                 count=0
+                break
         false_positive += count
         
         print("point " ,i , " fait")
@@ -27,28 +28,33 @@ def fitting(set_rect1, set_rect2, n):
 
 
 
-def comparaison_theo_exp(nb_rectangle, dimension):
-    n = 2000
+def comparaison_theo_exp(nb_rectangle, dimension, graphic_started = False):
+    n = 300
 
-    set_point, ensemble_repartition = creation_point_rectangles_2(n, nb_rectangle, dimension, True)
+    set_point, starting_rectangle = creation_point_rectangles_2(n, nb_rectangle, dimension, True)
     print("creation_point_rectangles fait")
-    set_rectangle = mv1_algo(set_point,nb_rectangle)
+    learn_rectangle = mv1_algo(set_point,nb_rectangle, True, True)
+    if graphic_started:
+        afficher_plsr_pts_rect_1(starting_rectangle, set_point, 1)
+    
     print("algo realisé")
 
-    return fitting(ensemble_repartition, set_rectangle, n), fitting(set_rectangle, ensemble_repartition, n) 
+    return fitting(starting_rectangle, learn_rectangle, 1000), fitting(learn_rectangle,starting_rectangle, 1000) 
 
 def big_test():
     dimension = 2
-    nb_rect_max = 60
+    nb_rect_max = 11
     
     nbrs, fits1, fits2 = [], [], []
     for nb_rect in range(10,nb_rect_max):
         print("calcul pour nb_rect = ", nb_rect)
-        fit1, fit2 = comparaison_theo_exp(nb_rect, dimension)
+        fit1, fit2 = comparaison_theo_exp(nb_rect, dimension, True)
         nbrs.append(nb_rect)
         fits1.append(fit1)
         fits2.append(fit2)
         print("sauvegare réussi pour nb_rect =  ", nb_rect)    
+    print(' faux positif ', fits2)
+    print('faux négati', fits1)
     plt.plot(nbrs, fits2, color= 'blue', label = 'faux positif ')
     plt.plot(nbrs, fits1, color = 'red', label = 'faux négatif')
     plt.xlabel('nb de rectangle')
@@ -63,7 +69,7 @@ def explosion_dimension(dim_mini, dim_max):
     nb_point = 5000
     nb_carre = 50
     tms, dims = [], []
-    save = open('result_algo_2.txt', 'a')
+    
     for dim in range(dim_mini, dim_max):
         print('dimension de calcul : ', dim)
         set_point = creation_point_rectangles_2(nb_point, nb_carre, dim)
@@ -73,9 +79,10 @@ def explosion_dimension(dim_mini, dim_max):
         t2 = clock()
         tms.append(t2 - t1)
         dims.append(dim)
+        save = open('result_algo_2.txt', 'a')
         save.write('\n' + str(dim) + '   '+str(t2 - t1))
         print('ecriture ok')
-    save.close()
+        save.close()
     
     print(tms, dims)
     plt.plot(dims, tms)
@@ -137,6 +144,6 @@ def dim_rect_mm_graphe(dim_mini, dim_max, eps_min, eps_max, eps_pas):
     plt.legend(loc='lower right') 
     plt.show()
 if __name__ == "__main__":
-    #big_test()
-    explosion_dimension(2,11)
+    big_test()
+    #explosion_dimension(2,11)
     #dim_rect_mm_graphe(2,160,0.1,1.1,0.1)

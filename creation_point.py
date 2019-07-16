@@ -16,7 +16,7 @@ def creation_point(n, dimension):
 
 def incercle(pt, center, rayon):
     """
-    return True if a point is the circle (center, rayon)
+    return True if  pt is in the circle (center, radius)
     """
     dist = 0
     for x1, x2 in zip(pt, center):
@@ -26,11 +26,10 @@ def incercle(pt, center, rayon):
 
 def inrectangle(pt, R):
     '''
-    return True if a point is a rectangle
+    return True if pt is in R
     '''
-#    print(R)
     lower, upper = R[0], R[1]
-#    print(len(lower), len(pt))
+    
     for i, x in enumerate(pt):
         if not(x>lower[i] and x<upper[i]):
             return False
@@ -39,20 +38,23 @@ def inrectangle(pt, R):
 
 def creation_point_sur_cercle(nb_point, nb_cercle, dimension):
     """
-    creates points on a circle
+    creates a nb_point points on nb_cercle circles in dimension dimensions
     """
     
     pts = []
     n = nb_point//nb_cercle
 
     for j in range(nb_cercle):
+        #creates the radius
         rayon = uniform(0.1, 0.3)
-        #rayon = 1
+        #creates the center
         center = [random() for k in range(dimension)]
         i = 0
         while i < n:
+            #take uniformly n points in the ith circle
             pt = [uniform(center[j]-rayon, center[j] + rayon) for j in range(dimension)]
             if incercle(pt, center, rayon):
+                #translate a point in the circle in a point on the circle
                 distance_c_pt = distance_lp(pt, center)
                 pt_1 = [center[i] + (xi - center[i]) * rayon / distance_c_pt  for i, xi in enumerate(pt)] 
                 pts.append(pt_1)
@@ -68,10 +70,12 @@ def creation_point_cercle(nb_point, nb_cercle, dimension):
     n = nb_point//nb_cercle
 
     for j in range(nb_cercle):
+        #creates the circle
         rayon = uniform(0.1, 0.3)
         center = [random() for k in range(dimension)]
         i = 0
         while i < n:
+            #creates points in this circle
             pt = [uniform(center[j]-rayon, center[j] + rayon) for j in range(dimension)]
             if incercle(pt, center, rayon):
                 pts.append(pt)
@@ -84,16 +88,15 @@ def tirage_points_set(set_rectangle, nb_point):
     """
     n = nb_point//len(set_rectangle)
     pts = []
-#    print(set_rectangle)
     for rect in set_rectangle:
-#        print(rect)
         R, S = rect[0], rect[1]
         for i in range(n):
+            #creates point in the rectangle rect
             pt = [uniform(R[i], S[i]) for i in range(len(R))]
             pts.append(pt)
     return pts
 
-def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, boole = False):
+def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, option_starting_cluster = False, option_rounded_point = False):
     """
     creates nb_points in n rectangles with random size in D dimension    
     """
@@ -102,13 +105,20 @@ def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, boole = False
     sommets = creation_point(nb_rectangle, dimension)
     n = nb_point//nb_rectangle
     for j in range(nb_rectangle):
+        #creates the rectangle
         cote = [uniform(0, 0.5) for k in range(dimension)]
         cotes.append(cote)
         for i in range(n):
-            #print(sommets[j])
-            pt = [round(uniform(sommets[j][k], sommets[j][k] + cote[k]), 2) for k in range(dimension)]
+            #creates points in this rectangles
+            if option_rounded_point:
+                pt = [round(uniform(sommets[j][k], sommets[j][k] + cote[k]), 2) for k in range(dimension)]
+            else:
+                 pt = [uniform(sommets[j][k], sommets[j][k] + cote[k]) for k in range(dimension)]
+            
             pts.append(pt)
-    if boole:
+    
+    if option_starting_cluster:
+        #return the set of point created and the set of cluster that had generated them
         repartition_rect = []
         for k, R in enumerate(sommets):
             rect, cote = [], cotes[k]
@@ -123,20 +133,21 @@ def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, boole = False
 
 def creation_point_rectangles(nb_point, nb_rectangle, dimension):
     """
-    creates nb_points in n rectangles in D dimension
+    first version of the generation algortihm creates squares and creates points in them
     """
     pts = []
     sommets = creation_point(nb_rectangle, dimension)
     n = nb_point//nb_rectangle
     for j in range(nb_rectangle):
+        side = uniform(0.1, 0,3)
         for i in range(n):
-            #print(sommets[j])
-            pt = [uniform(sommets[j][k], sommets[j][k]+0.2) for k in range(dimension)]
+            pt = [uniform(sommets[j][k], sommets[j][k]+side) for k in range(dimension)]
             pts.append(pt)
     
     return pts
 
 
 if __name__ == "__main__":
-    pts = creation_point(1000, dimension)
+    #used for debugging
+    pts = creation_point_rectangles_2(1000, 100,3)
     print(pts)
