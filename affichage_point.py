@@ -12,7 +12,7 @@ def afficher_points_2D(set_points):
     """
     return the data neccessary to plot one set of point in 2 dimensions
     """
-    X, Y = [p[0] for p in set_points], [p[1] for p in set_points]
+    X, Y = [p[0][0] for p in set_points], [p[0][1] for p in set_points]
     return(X, Y)
 
 def afficher_rectangle(R):

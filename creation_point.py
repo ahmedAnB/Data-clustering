@@ -57,7 +57,7 @@ def creation_point_sur_cercle(nb_point, nb_cercle, dimension):
                 #translate a point in the circle in a point on the circle
                 distance_c_pt = distance_lp(pt, center)
                 pt_1 = [center[i] + (xi - center[i]) * rayon / distance_c_pt  for i, xi in enumerate(pt)] 
-                pts.append(pt_1)
+                pts.append([pt_1, pt_1])
                 i+=1
     return pts
     
@@ -78,7 +78,7 @@ def creation_point_cercle(nb_point, nb_cercle, dimension):
             #creates points in this circle
             pt = [uniform(center[j]-rayon, center[j] + rayon) for j in range(dimension)]
             if incercle(pt, center, rayon):
-                pts.append(pt)
+                pts.append([pt, pt])
                 i+=1
     return pts
             
@@ -93,7 +93,7 @@ def tirage_points_set(set_rectangle, nb_point):
         for i in range(n):
             #creates point in the rectangle rect
             pt = [uniform(R[i], S[i]) for i in range(len(R))]
-            pts.append(pt)
+            pts.append([pt, pt])
     return pts
 
 def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, option_starting_cluster = False, option_rounded_point = False):
@@ -115,7 +115,7 @@ def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, option_starti
             else:
                  pt = [uniform(sommets[j][k], sommets[j][k] + cote[k]) for k in range(dimension)]
             
-            pts.append(pt)
+            pts.append([pt, pt])
     
     if option_starting_cluster:
         #return the set of point created and the set of cluster that had generated them
@@ -142,7 +142,7 @@ def creation_point_rectangles(nb_point, nb_rectangle, dimension):
         side = uniform(0.1, 0,3)
         for i in range(n):
             pt = [uniform(sommets[j][k], sommets[j][k]+side) for k in range(dimension)]
-            pts.append(pt)
+            pts.append([pt, pt])
     
     return pts
 

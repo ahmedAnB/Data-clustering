@@ -115,12 +115,12 @@ def sl_merge_rectangle(sl, set_rectangle, nn, distance_used):
     return sl2, set_rectangle_1
 
 
-def mv1_algo_opti(set_point, nb_rect_max, distance_used):
+def mv1_algo_opti(set_point, nb_rect_max, distance_used, epsilon = 0.1):
     """
     mv1 algo with sorted list
     """
     #initialization
-    set_rectangle = premiers_rectangles(set_point)
+    set_rectangle = premiers_rectangles(set_point, epsilon)
     sl = init_sl(set_rectangle, distance_used)
     
     while len(set_rectangle) > nb_rect_max:

@@ -1,47 +1,9 @@
 from timeit import timeit
 from sys import argv
 from math import sqrt
+from distance_use import *
 
 from affichage_point import *
-
-
-def volumetric_cost(R):
-    """
-    computes the volume of a Rectangle R
-    """
-    if not(isinstance(R[0],list)):
-        return 0
-    else:
-        result = 1
-        for xi_lower, xi_upper in zip(R[0],R[1]):
-            result *= abs(xi_upper - xi_lower)
-        return result
-
-
-def merge_gain_volumme(R, S):
-    """
-    Computes the volume created by merging this 2 rectangles
-    """
-    return volumetric_cost(merge(R,S)) - volumetric_cost(R) - volumetric_cost(S)
-
-
-def distance_lp(R,S):
-    """
-    return the Lp distance between rectangles
-    """
-    p = 1
-    R1 = R
-    S1 = S
-    if isinstance(R[0],list):
-       R1= R[0]
-    if isinstance(S[0],list):
-       S1= S[0]
-    result = 0
-    
-    for ri, si in zip(R, S):
-        result += abs(ri -si)**p
-    
-    return result ** (1/p)
 
 
 def rect_center(S):
@@ -62,69 +24,13 @@ def minimum_rect(set_point, boole = False):
     dimension = len(set_point[0])
     R_min, S_max = [], []
     for i in range(dimension):
-        L = [point[i] for point in set_point]
+        L = [point[0][i] for point in set_point]
         R_min.append(min(L))
         S_max.append(max(L))
     if boole:
         return([R_min,S_max])
     else:
         return((R_min,S_max))
-
-
-def distance(R, S):
-    """
-    compute the square distance  between two rectangles
-    """
-    if R == None:
-        return 0
-    if S == None: 
-        return 0
-    if len(S)==1:
-        S = S[0]
-    if len(R)==1:
-        R = R[0]
-     
-    condition_s = not(isinstance(S[0], list))
-    condition_r = not(isinstance(R[0], list))
-    #print('R', R)# 'dimension', dimension)
-    if condition_r and condition_s:#distance btw 2 points
-        result = 0
-        dimension = len(R)
-        for i in range(dimension):
-            result += (R[i] - S[i])**2
-        return result
-    elif condition_s:
-        copie = R
-        R = S
-        S = copie
-    if not(isinstance(R[0], list)):#transformation of a point in a rect
-        R1 = [R, R]
-        return distance(R1, S)
-
-    p_min = []
-    p_max = []
-    dimension = len(R[0])
-#    print(dimension, len(R), len(R[0]), len(R[1]), len(S[0]), len(S[1]))
-#    print(R, S)
-    for i in range(dimension):#definition of volumetric distance
-        p_min.append(min([R[0][i], R[1][i], S[0][i], S[1][i]]))
-        p_max.append(max([R[0][i], R[1][i], S[0][i], S[1][i]]))
-    
-    return distance(p_min, p_max)
-
-
-def cost_rectangle(set_rectangle, distance_used = distance):
-    """
-    computes the cost of a set of rectangle
-    """
-    cout = 0
-    
-    for rect in set_rectangle:
-        R = rect[0]
-        S = rect[1]
-        cout += distance_used(R, S)
-    
-    return cout
 
 
 def creation_hash_table(set_point, epsilon):
@@ -134,10 +40,11 @@ def creation_hash_table(set_point, epsilon):
     it means that the algorithme creates an epsilon-size grid and places every point in its corresponding square
     """
     hash_table = {}#initialisation
-    dimension = len(set_point[0])
-
+    dimension = len(set_point[0][0])
+    
     for point in set_point:#each point
-        lower = tuple(int(point[i]/epsilon) for i in range(dimension))#compute key
+        pt1 = point[0]
+        lower = tuple(int(pt1[i]/epsilon) for i in range(dimension))#compute key
         if lower in hash_table.keys():#add the point in the HT 
             hash_table[lower].append(point)
         else:
@@ -279,13 +186,13 @@ def merge_rectangle(nearest_neighboor, set_rectangle, option_return_rectangle = 
     return(set_rectangle1)
 
 
-def mv1_algo(set_point, nb_rectangle, option_ht = True, graphic_end = False):
+def mv1_algo(set_point, nb_rectangle, option_ht = True, graphic_end = False, epsilon = 0.1):
     """
     working version of previous algorithm
     """
     if option_ht:
         #creates the hash table
-        hash_table = epsilon_variation_algo(set_point, len(set_point))
+        hash_table = epsilon_variation_algo(set_point, len(set_point), epsilon)
         min_nb_rectangle = sqrt(len(set_point))
         set_rectangle = [minimum_rect(hash_table[key]) for key in hash_table.keys()]
     
