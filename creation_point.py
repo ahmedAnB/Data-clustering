@@ -18,8 +18,9 @@ def incercle(pt, center, rayon):
     """
     return True if  pt is in the circle (center, radius)
     """
+    pt1 = pt[0]
     dist = 0
-    for x1, x2 in zip(pt, center):
+    for x1, x2 in zip(pt1, center):
         dist += (x1 - x2)**2
     
     return dist <= (rayon**2)
@@ -28,9 +29,10 @@ def inrectangle(pt, R):
     '''
     return True if pt is in R
     '''
+    pt1 = pt[0]
     lower, upper = R[0], R[1]
     
-    for i, x in enumerate(pt):
+    for i, x in enumerate(pt1):
         if not(x>lower[i] and x<upper[i]):
             return False
     
@@ -114,7 +116,7 @@ def creation_point_rectangles_2(nb_point, nb_rectangle, dimension, option_starti
                 pt = [round(uniform(sommets[j][k], sommets[j][k] + cote[k]), 2) for k in range(dimension)]
             else:
                  pt = [uniform(sommets[j][k], sommets[j][k] + cote[k]) for k in range(dimension)]
-            
+                        
             pts.append([pt, pt])
     
     if option_starting_cluster:
@@ -139,7 +141,7 @@ def creation_point_rectangles(nb_point, nb_rectangle, dimension):
     sommets = creation_point(nb_rectangle, dimension)
     n = nb_point//nb_rectangle
     for j in range(nb_rectangle):
-        side = uniform(0.1, 0,3)
+        side = uniform(0.1, 0.3)
         for i in range(n):
             pt = [uniform(sommets[j][k], sommets[j][k]+side) for k in range(dimension)]
             pts.append([pt, pt])

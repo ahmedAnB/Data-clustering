@@ -122,10 +122,11 @@ def mv1_algo_opti(set_point, nb_rect_max, distance_used, epsilon = 0.1):
     #initialization
     set_rectangle = premiers_rectangles(set_point, epsilon)
     sl = init_sl(set_rectangle, distance_used)
-    
+    #while the lenght is not our number of cluster
     while len(set_rectangle) > nb_rect_max:
         #find the nearest neighboor
         nn = sl[0][1]
+        
         #merge the nearest neighboor and update the SL
         sl, set_rectangle = sl_merge_rectangle(sl, set_rectangle, nn, distance_used)
     

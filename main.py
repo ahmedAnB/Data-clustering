@@ -21,7 +21,7 @@ def minimum_rect(set_point, boole = False):
     """
     return the bouding box of a set of point
     """
-    dimension = len(set_point[0])
+    dimension = len(set_point[0][0])
     R_min, S_max = [], []
     for i in range(dimension):
         L = [point[0][i] for point in set_point]
@@ -140,10 +140,6 @@ def merge_bonus(points):
     R = points[0]
     S = points[1]
     
-    if not(isinstance(R[0], list)):
-        R = [R, R]
-    if not(isinstance(S[0], list)):
-        S = [S, S]
     
     dR = distance([R[0]], [R[1]])
     dS = distance([S[0]], [S[1]])
@@ -157,17 +153,9 @@ def merge_rectangle(nearest_neighboor, set_rectangle, option_return_rectangle = 
     merge the 2 rectancle in nearest_neigboor and can return it without updating set_rectangle
     """
     #initialisation
-    R = nearest_neighboor[0]
-    S = nearest_neighboor[1]
     R1 = nearest_neighboor[0]
     S1 = nearest_neighboor[1]
     set_rectangle1 = set_rectangle.copy()
-
-    #transform a point in a rectangle
-    if not(isinstance(R[0], list)):
-        R1 = [R, R]
-    if not(isinstance(S[0], list)):
-        S1 = [S, S]
     dimension = len(R1[0])
     p_min = []
     p_max = []
@@ -179,8 +167,8 @@ def merge_rectangle(nearest_neighboor, set_rectangle, option_return_rectangle = 
     if option_return_rectangle:
         return [p_min, p_max]
     #update the set of rectangles
-    set_rectangle1.remove(S)
-    set_rectangle1.remove(R)
+    set_rectangle1.remove(S1)
+    set_rectangle1.remove(R1)
     set_rectangle1.append([p_min, p_max])
     
     return(set_rectangle1)
@@ -282,6 +270,8 @@ def evolution_cost(set_point, eta):
 
     #convert the hash table in a set of rectangles
     set_rectangle = [minimum_rect(hash_table[key]) for key in hash_table.keys()]
+
+
     #apply the NN algorithm while the condition is not False
     i = 0 
     while True:

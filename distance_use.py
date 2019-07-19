@@ -1,3 +1,6 @@
+###fonctions distances and costs
+
+
 from timeit import timeit
 from sys import argv
 from math import sqrt
@@ -52,16 +55,14 @@ def distance(R, S):
         return distance_lp(lower, upper, 2)
 
 
-def cost_rectangle(set_rectangle, distance_used = distance):
+def cost_rectangle(set_rectangle, distance_used = volumetric_cost):
     """
     computes the cost of a set of rectangle
     """
     cout = 0
     
     for rect in set_rectangle:
-        R = rect[0]
-        S = rect[1]
-        cout += distance_used(R, S)
+        cout += distance_used(rect)
     
     return cout
 

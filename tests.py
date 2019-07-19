@@ -1,4 +1,4 @@
-from ceation_point import * 
+from creation_point import * 
 from main import *
 from affichage_point import * 
 from creation_point import *
@@ -8,7 +8,7 @@ import numpy
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 from distance_use import *
-
+from numpy import arange
 
 def fitting(set_rect1, set_rect2, n):
     """
@@ -24,7 +24,7 @@ def fitting(set_rect1, set_rect2, n):
                 break
         false_positive += count
         
-        print("point " ,i , " fait")
+        #print("point " ,i , " fait")
     print(" fitting fait ")
     return false_positive/n
 
@@ -35,9 +35,9 @@ def experience_between_theoritical_and_learned_cluster(nb_rectangle, dimension, 
     """
     
     n = 300
-
     set_point, starting_rectangle = creation_point_rectangles_2(n, nb_rectangle, dimension, True)
     print("creation_point_rectangles fait")
+    
     if epsilon is not None:
         learn_rectangle = mv1_algo_opti(set_point, nb_rectangle, distance, epsilon)
     else:
@@ -65,9 +65,11 @@ def evolution_error_side_grid(nb_point, nb_rectangle, dimension, eps_min, eps_ma
         epss.append(eps)
     plt.plot(epss, false_positives, label = 'false_positives')
     plt.plot(epss, false_negatives, label = 'false_negatives')
+    plt.legend(loc = 'upper right')
     plt.xlabel('cells sides')
     plt.ylabel('errors rate')
     plt.title(" evolution of the errors rate depending of hash table's cells size")
+    plt.show()
 
 
 def evolution_error_cluster(n_point, dimension, nb_rect_min, nb_rect_max, nb_rect_step):
@@ -87,10 +89,12 @@ def evolution_error_cluster(n_point, dimension, nb_rect_min, nb_rect_max, nb_rec
     print('rate false negatif', fits1)
     plt.plot(nbrs, fits2, color= 'blue', label = 'false positif ')
     plt.plot(nbrs, fits1, color = 'red', label = 'false negatif')
+    plt.legend(loc = 'upper right')
     plt.xlabel('Number of Rectangle')
     plt.ylabel('Error Rate')
     plt.title("evolution of the error rate depending on the number of cluster used initially")
     plt.show()
+
 
 def explosion_dimension(dim_mini, dim_max, nb_point, nb_carre):
     """
@@ -119,6 +123,8 @@ def explosion_dimension(dim_mini, dim_max, nb_point, nb_carre):
     plt.xlabel('Dimension')
     plt.ylabel(' Computing time')
     plt.title(' Evolution time and dimension for n = 5000 et eps = 0.2')
+    plt.show()
+
 
 def experience_isolated_points_3D(dim_mini, dim_max, eps_min, eps_max, eps_pas, nb_point):
     """
@@ -167,7 +173,6 @@ def dim_rect_mm_graphe(dim_mini, dim_max, eps_min, eps_max, eps_pas, nb_point):
             ht = epsilon_variation_algo(set_point, len(set_point),eps)
             len_eps.append(len(ht.keys()))
             dims_eps.append(dim)
-        #print(len_eps, dims_eps)
         lab = "epsilon = " + str(eps)
         plt.plot(dims_eps, len_eps, label = lab)
     
@@ -178,14 +183,17 @@ def dim_rect_mm_graphe(dim_mini, dim_max, eps_min, eps_max, eps_pas, nb_point):
     plt.show()
 
 
-def evolution_nb_rectangle_cost(nb_point):
+def evolution_nb_rectangle_cost(nb_point, nb_rectangle, dimension):
     """
     shows the evolution of the cost depending on the numbered of merged rectangle in the cluster at each step
     """
     set_point = creation_point_rectangles(nb_point, nb_rectangle, dimension)
     Y, X = evolution_cost(set_point, 0.05)
-    afficher_XY(X, Y)
-    
+    plt.plot(X, Y)
+    plt.xlabel('number of learned rectangles')
+    plt.ylabel('cost function')
+    plt.title('evolution of a cost function depending on number of learned rectangles')
+    plt.show()   
  
 def test_merge():
     """
